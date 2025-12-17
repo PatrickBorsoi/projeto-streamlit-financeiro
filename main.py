@@ -31,9 +31,28 @@ if file_upload:
     # Visão Instituição
     exp2 = st.expander('Instituições')
     df_instituicao = df.pivot_table(index='Data', columns='Instituição', values='Valor')
-    exp2.dataframe(df_instituicao)
-    exp2.line_chart(df_instituicao)
-    
-    # Ultima data de dados
-    last_dt = df_instituicao.sort_index().iloc[-1]
-    exp2.bar_chart(last_dt)
+    # Criando abas
+    tab_data, tab_history, tab_share = exp2.tabs(['Dados', 'Histórico', 'Distribuição'])
+    with tab_data:
+        st.dataframe(df_instituicao)
+    with tab_history:
+        st.line_chart(df_instituicao)
+
+    with tab_share:
+
+        ## exibindo somente datas existentes
+        date = st.selectbox('Filtro data', options=df_instituicao.index)
+        st.bar_chart(df_instituicao.loc[date])
+        ## Entrada com calendario
+        # date = st.date_input(label='Data para Distribuição', 
+        #               min_value=df_instituicao.index.min(), 
+        #               max_value=df_instituicao.index.max())
+        # # Ultima data de dados
+
+        # if date not in df_instituicao.index:
+        #     st.warning('Entre com uma data valida')
+        # else:
+        #     st.bar_chart(df_instituicao.loc[date])
+        # last_dt = df_instituicao.sort_index().iloc[date]
+        # st.bar_chart(last_dt)
+
